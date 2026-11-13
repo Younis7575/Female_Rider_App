@@ -1,0 +1,3 @@
+// Copy to ios/Flutter/Maps.xcconfig and set your Google Maps iOS key.
+// This file is included by Debug.xcconfig / Release.xcconfig and feeds Info.plist GMSApiKey.
+MAPS_API_KEY=

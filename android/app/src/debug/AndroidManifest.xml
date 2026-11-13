@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Required for Flutter tooling (hot reload, debugging). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Local development only: allow HTTP to the Laravel dev server (10.0.2.2 / LAN IP). -->
+    <application
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        tools:targetApi="28" />
+</manifest>

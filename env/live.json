@@ -1,0 +1,7 @@
+{
+  "APP_ENV": "production",
+  "API_BASE_URL": "https://femalerider.mytechrcm.com",
+  "WS_HOST": "femalerider.mytechrcm.com",
+  "WS_PORT": "443",
+  "WS_SCHEME": "wss"
+}
