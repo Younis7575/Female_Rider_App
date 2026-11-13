@@ -26,6 +26,34 @@ class _Adapter implements HttpClientAdapter {
   void close({bool force = false}) {}
 }
 
+/// Fails the first [failures] attempts with a connection error, then answers 200.
+class _FlakyAdapter implements HttpClientAdapter {
+  _FlakyAdapter(this.failures, {this.type = DioExceptionType.connectionError});
+  int failures;
+  final DioExceptionType type;
+  int calls = 0;
+
+  @override
+  Future<ResponseBody> fetch(RequestOptions options, Stream<Uint8List>? requestStream, Future<void>? cancelFuture) async {
+    calls++;
+    if (failures > 0) {
+      failures--;
+      throw DioException(requestOptions: options, type: type);
+    }
+    return ResponseBody.fromString(jsonEncode({'success': true, 'data': {'ok': true}}), 200, headers: {
+      Headers.contentTypeHeader: ['application/json'],
+    });
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
+
+ApiClient _flakyClient(_FlakyAdapter adapter) {
+  final dio = Dio(BaseOptions(baseUrl: 'http://api.test/api/v1', validateStatus: (_) => true))..httpClientAdapter = adapter;
+  return ApiClient(baseUrl: 'http://api.test/api/v1', storage: AppStorage(MemoryKeyValueStore({})), dio: dio);
+}
+
 ApiClient _client(_Adapter adapter, {void Function()? onUnauthorized, String? token}) {
   final storage = AppStorage(MemoryKeyValueStore({'auth_token': ?token}));
   final dio = Dio(BaseOptions(baseUrl: 'http://api.test/api/v1', validateStatus: (_) => true))..httpClientAdapter = adapter;
@@ -102,6 +130,30 @@ void main() {
     test('missing message falls back to a friendly default', () {
       final ex = ApiException.fromEnvelope(ApiEnvelope.fromJson({'success': false, 'error': {'code': 'x'}}, statusCode: 503));
       expect(ex.message, contains('trouble'));
+    });
+  });
+
+  group('ApiClient retries (flaky networks)', () {
+    test('a request that never reached the server is retried', () async {
+      final adapter = _FlakyAdapter(2);
+      final env = await _flakyClient(adapter).post('/trips/t1/arrive');
+      expect(env.success, isTrue);
+      expect(adapter.calls, 3);
+    });
+
+    test('gives up after two retries', () async {
+      final adapter = _FlakyAdapter(5);
+      await expectLater(_flakyClient(adapter).get('/me'), throwsA(isA<ApiException>()));
+      expect(adapter.calls, 3);
+    });
+
+    test('a POST that timed out after sending is not repeated, a GET is', () async {
+      final post = _FlakyAdapter(1, type: DioExceptionType.receiveTimeout);
+      await expectLater(_flakyClient(post).post('/offers/1/accept'), throwsA(isA<ApiException>()));
+      expect(post.calls, 1);
+      final get = _FlakyAdapter(1, type: DioExceptionType.receiveTimeout);
+      expect((await _flakyClient(get).get('/driver/requests')).success, isTrue);
+      expect(get.calls, 2);
     });
   });
 

@@ -221,7 +221,11 @@ class _TripChatScreenState extends ConsumerState<TripChatScreen> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(other?.firstName ?? 'Chat', style: AppText.h3, maxLines: 1, overflow: TextOverflow.ellipsis),
               Text(
-                _canSend ? (driverView ? 'Your rider' : 'Your driver${_trip?.vehicle?.plateNumber != null ? ' · ${_trip!.vehicle!.plateNumber}' : ''}') : 'Chat closed',
+                _loading
+                    ? 'Loading…'
+                    : _canSend
+                        ? (driverView ? 'Your rider' : 'Your driver${_trip?.vehicle?.plateNumber != null ? ' · ${_trip!.vehicle!.plateNumber}' : ''}')
+                        : 'Chat closed',
                 style: AppText.caption,
               ),
             ]),

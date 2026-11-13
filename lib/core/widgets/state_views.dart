@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../config/config_repository.dart';
 import '../network/api_envelope.dart';
 import '../theme/app_theme.dart';
 import 'buttons.dart';
@@ -171,12 +172,17 @@ class AsyncView<T> extends StatelessWidget {
 }
 
 /// Thin banner shown when realtime/network connectivity is degraded.
-class OfflineBanner extends StatelessWidget {
+///
+/// Hidden when the server runs without sockets (polling mode, e.g. shared hosting):
+/// polling is the intended transport there, not a degraded state.
+class OfflineBanner extends ConsumerWidget {
   const OfflineBanner({super.key, this.message = 'Reconnecting… live updates paused, refreshing automatically.'});
   final String message;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final realtimeKey = ref.watch(appConfigProvider).realtime?.key ?? '';
+    if (realtimeKey.isEmpty) return const SizedBox.shrink();
     return Material(
       color: AppColors.warningSoft,
       child: Padding(

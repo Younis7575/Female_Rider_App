@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'core/location/driver_tracker.dart';
 import 'core/notifications/push_service.dart';
 import 'core/realtime/realtime_service.dart';
 import 'core/router/app_router.dart';
@@ -107,6 +108,17 @@ class _FemaleRiderAppState extends ConsumerState<FemaleRiderApp> with WidgetsBin
     ref.watch(realtimeBinderProvider);
     ref.watch(pushBinderProvider);
     final router = ref.watch(routerProvider);
+    // Polling fallback (no sockets): the driver heartbeat reports a newly assigned trip
+    // (e.g. the customer accepted this driver's bid) — open it even without offer.accepted.
+    ref.listen<String?>(driverTrackerProvider.select((s) => s.activeTripId), (prev, next) {
+      if (next == null || next == prev) return;
+      final session = ref.read(sessionProvider.notifier);
+      if (session.me?.activeTripId != next) session.setActiveTrip(next);
+      final path = router.state.uri.path;
+      if (path != Routes.driverTrip(next) && (session.me?.user.isDriverMode ?? false)) {
+        router.go(Routes.driverTrip(next));
+      }
+    });
     ref.listen<SessionState>(sessionProvider, (prev, next) {
       if (next is SessionSignedIn && prev is! SessionSignedIn) {
         final pending = ref.read(pushServiceProvider).takePendingRoute();

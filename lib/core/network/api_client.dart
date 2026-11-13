@@ -29,7 +29,7 @@ class ApiClient {
       : _dio = dio ??
             Dio(BaseOptions(
               baseUrl: baseUrl,
-              connectTimeout: const Duration(seconds: 15),
+              connectTimeout: const Duration(seconds: 10),
               receiveTimeout: const Duration(seconds: 30),
               sendTimeout: const Duration(seconds: 60),
               headers: const {'Accept': 'application/json'},
@@ -53,7 +53,7 @@ class ApiClient {
   Dio get dio => _dio;
 
   Future<ApiEnvelope> get(String path, {Map<String, dynamic>? query}) =>
-      _send(() => _dio.get(path, queryParameters: _clean(query)));
+      _send(() => _dio.get(path, queryParameters: _clean(query)), safe: true);
 
   Future<ApiEnvelope> post(String path, {Object? data, bool idempotent = false, String? idempotencyKey}) =>
       _send(() => _dio.post(path, data: data, options: _idem(idempotent, idempotencyKey)));
@@ -85,7 +85,8 @@ class ApiClient {
         }
       }
     }
-    return _send(() => _dio.post(path, data: form, options: _idem(idempotent, null), onSendProgress: onProgress));
+    // A FormData body can only be sent once, so uploads are not retried automatically.
+    return _send(() => _dio.post(path, data: form, options: _idem(idempotent, null), onSendProgress: onProgress), retries: 0);
   }
 
   Options? _idem(bool idempotent, String? key) =>
@@ -97,14 +98,41 @@ class ApiClient {
     return m;
   }
 
-  Future<ApiEnvelope> _send(Future<Response<dynamic>> Function() call) async {
+  /// Whether a failed attempt may be repeated. Connection failures mean the request
+  /// never reached the server, so any method may be retried; a timeout after the
+  /// request was sent is only retried for reads ([safe]).
+  static bool shouldRetry(DioExceptionType type, {required bool safe}) {
+    switch (type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.connectionError:
+        return true;
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.sendTimeout:
+        return safe;
+      default:
+        return false;
+    }
+  }
+
+  static const _retryDelays = [Duration(milliseconds: 700), Duration(milliseconds: 1800)];
+
+  Future<ApiEnvelope> _send(Future<Response<dynamic>> Function() call, {bool safe = false, int retries = 2}) async {
     Response<dynamic> res;
-    try {
-      res = await call();
-    } on DioException catch (e) {
-      throw mapDioException(e);
-    } catch (e) {
-      throw ApiException(message: 'Something went wrong. Please try again.', code: ApiException.unknownCode, details: e.toString());
+    var attempt = 0;
+    while (true) {
+      try {
+        res = await call();
+        break;
+      } on DioException catch (e) {
+        if (attempt < retries && attempt < _retryDelays.length && shouldRetry(e.type, safe: safe)) {
+          await Future<void>.delayed(_retryDelays[attempt]);
+          attempt++;
+          continue;
+        }
+        throw mapDioException(e);
+      } catch (e) {
+        throw ApiException(message: 'Something went wrong. Please try again.', code: ApiException.unknownCode, details: e.toString());
+      }
     }
     final env = ApiEnvelope.fromJson(res.data, statusCode: res.statusCode);
     final status = res.statusCode ?? 0;
