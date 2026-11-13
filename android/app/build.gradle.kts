@@ -21,6 +21,13 @@ val localProperties = Properties().apply {
 }
 val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
+// Play upload key: android/key.properties (git-ignored) → storeFile, storePassword, keyAlias, keyPassword.
+val keystoreProperties = Properties().apply {
+    val f = rootProject.file("key.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val hasUploadKey = keystoreProperties.getProperty("storeFile")?.let { file(it).exists() } == true
+
 android {
     namespace = "com.gopangitsolution.femalerider"
     // flutter_local_notifications / androidx.core 1.19 require compiling against API 37+.
@@ -44,10 +51,29 @@ android {
         multiDexEnabled = true
     }
 
+    signingConfigs {
+        if (hasUploadKey) {
+            create("release") {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: configure a release signing config before publishing.
-            signingConfig = signingConfigs.getByName("debug")
+            if (hasUploadKey) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                // Local testing only — Play Console rejects debug-signed bundles.
+                logger.warn("FemaleRider: android/key.properties missing - release build is DEBUG-signed.")
+                signingConfig = signingConfigs.getByName("debug")
+            }
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }
