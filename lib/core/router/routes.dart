@@ -47,6 +47,7 @@ abstract final class Routes {
   static const driverLedger = '/driver/ledger';
   static const driverPayouts = '/driver/payouts';
   static const driverStatements = '/driver/statements';
+  static const driverGuardian = '/driver/guardian';
 
   // Driver onboarding (any mode)
   static const driverDocuments = '/driver-documents';
