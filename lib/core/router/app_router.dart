@@ -13,7 +13,6 @@ import '../../features/account/presentation/settings_screen.dart';
 import '../../features/auth/domain/otp_args.dart';
 import '../../features/auth/presentation/onboarding_screen.dart';
 import '../../features/auth/presentation/otp_screen.dart';
-import '../../features/auth/presentation/phone_screen.dart';
 import '../../features/auth/presentation/session_controller.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/customer/presentation/coupons_screen.dart';
@@ -24,13 +23,11 @@ import '../../features/driver/presentation/driver_requests_screen.dart';
 import '../../features/driver/presentation/driver_trip_screen.dart';
 import '../../features/driver_finance/presentation/earnings_screen.dart';
 import '../../features/driver_finance/presentation/ledger_screen.dart';
-import '../../features/driver_finance/presentation/payouts_screen.dart';
 import '../../features/driver/presentation/guardian_screen.dart';
 import '../../features/driver_finance/presentation/pay_screen.dart';
 import '../../features/driver_finance/presentation/statements_screen.dart';
 import '../../features/driver_onboarding/presentation/application_status_screen.dart';
 import '../../features/driver_onboarding/presentation/apply_documents_screen.dart';
-import '../../features/driver_onboarding/presentation/apply_payout_screen.dart';
 import '../../features/driver_onboarding/presentation/apply_personal_screen.dart';
 import '../../features/driver_onboarding/presentation/apply_review_screen.dart';
 import '../../features/driver_onboarding/presentation/apply_vehicle_screen.dart';
@@ -53,6 +50,10 @@ import '../../features/trips/presentation/trip_detail_screen.dart';
 import '../../features/trips/presentation/trip_history_screen.dart';
 import '../../features/verification/presentation/account_status_screen.dart';
 import '../../features/verification/presentation/verification_screen.dart';
+import '../../features/auth/presentation/email_otp_screen.dart';
+import '../../features/auth/presentation/forgot_password_screen.dart';
+import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/register_screen.dart';
 import 'redirect.dart';
 import 'routes.dart';
 
@@ -94,7 +95,14 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: Routes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(path: Routes.onboarding, builder: (_, _) => const OnboardingScreen()),
-      GoRoute(path: Routes.login, builder: (_, _) => const PhoneScreen()),
+      GoRoute(path: Routes.login, builder: (_, _) => const LoginScreen()),
+      GoRoute(path: Routes.register, builder: (_, _) => const RegisterScreen()),
+      GoRoute(path: Routes.forgotPassword, builder: (_, _) => const ForgotPasswordScreen()),
+      GoRoute(
+        path: Routes.emailOtp,
+        redirect: (_, s) => s.extra is EmailOtpResult ? null : Routes.login,
+        builder: (_, s) => EmailOtpScreen(request: s.extra! as EmailOtpResult),
+      ),
       GoRoute(
         path: Routes.otp,
         redirect: (_, s) => s.extra is OtpArgs ? null : Routes.login,
@@ -163,7 +171,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(path: 'earnings', builder: (_, _) => const EarningsScreen()),
           GoRoute(path: 'ledger', builder: (_, _) => const LedgerScreen()),
-          GoRoute(path: 'payouts', builder: (_, _) => const PayoutsScreen()),
           GoRoute(path: 'statements', builder: (_, _) => const StatementsScreen()),
           GoRoute(path: 'guardian', builder: (_, _) => const GuardianScreen()),
           GoRoute(path: 'pay', builder: (_, _) => const PayScreen()),
@@ -179,7 +186,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: 'personal', builder: (_, _) => const ApplyPersonalScreen()),
           GoRoute(path: 'vehicle', builder: (_, _) => const ApplyVehicleScreen()),
           GoRoute(path: 'documents', builder: (_, _) => const ApplyDocumentsScreen()),
-          GoRoute(path: 'payout', builder: (_, _) => const ApplyPayoutScreen()),
           GoRoute(path: 'review', builder: (_, _) => const ApplyReviewScreen()),
           GoRoute(path: 'status', builder: (_, _) => const DriverApplicationStatusScreen()),
         ],

@@ -5,7 +5,7 @@ import '../../../../core/widgets/widgets.dart';
 
 /// Shared chrome for driver application steps: dark app bar with step progress.
 class ApplyScaffold extends StatelessWidget {
-  const ApplyScaffold({super.key, required this.step, required this.title, required this.child, this.bottom, this.totalSteps = 4});
+  const ApplyScaffold({super.key, required this.step, required this.title, required this.child, this.bottom, this.totalSteps = 3});
   final int step;
   final int totalSteps;
   final String title;

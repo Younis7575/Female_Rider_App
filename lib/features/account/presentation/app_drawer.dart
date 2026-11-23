@@ -38,7 +38,7 @@ class AppDrawer extends ConsumerWidget {
         _Item(icon: Icons.notifications_active_outlined, label: 'Ride requests', onTap: () => go(Routes.driverRequests)),
         _Item(icon: Icons.account_balance_wallet_outlined, label: 'Earnings', onTap: () => go(Routes.driverEarnings)),
         _Item(icon: Icons.receipt_long_outlined, label: 'Ledger', onTap: () => go(Routes.driverLedger)),
-        _Item(icon: Icons.payments_outlined, label: 'Payouts', onTap: () => go(Routes.driverPayouts)),
+        _Item(icon: Icons.account_balance_wallet_outlined, label: 'Pay / Add balance', onTap: () => go(Routes.driverPay)),
         _Item(icon: Icons.summarize_outlined, label: 'Statements', onTap: () => go(Routes.driverStatements)),
         _Item(icon: Icons.history_rounded, label: 'Ride history', onTap: () => go(Routes.history(as: 'driver'))),
         _Item(icon: Icons.folder_open_rounded, label: 'Documents', onTap: () => go(Routes.driverDocuments)),

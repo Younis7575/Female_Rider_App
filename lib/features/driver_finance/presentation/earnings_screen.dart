@@ -115,7 +115,7 @@ class _Body extends StatelessWidget {
       Row(children: [
         Expanded(child: AppButton.secondary(label: 'Ledger', icon: Icons.receipt_long_outlined, onPressed: () => context.push(Routes.driverLedger))),
         const SizedBox(width: AppSpace.sm),
-        Expanded(child: AppButton.secondary(label: 'Payouts', icon: Icons.account_balance_outlined, onPressed: () => context.push(Routes.driverPayouts))),
+        Expanded(child: AppButton.secondary(label: 'Pay / Add balance', icon: Icons.account_balance_wallet_outlined, onPressed: () => context.push(Routes.driverPay))),
       ]),
     ]);
   }

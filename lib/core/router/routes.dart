@@ -4,6 +4,9 @@ abstract final class Routes {
   static const onboarding = '/onboarding';
   static const login = '/login';
   static const otp = '/login/otp';
+  static const emailOtp = '/login/code';
+  static const register = '/register';
+  static const forgotPassword = '/forgot-password';
   static const profileSetup = '/profile-setup';
   static const accountStatus = '/account-status';
   static const verification = '/verification';
@@ -45,7 +48,6 @@ abstract final class Routes {
   static String driverRate(String tripId) => '/driver/trip/$tripId/rate';
   static const driverEarnings = '/driver/earnings';
   static const driverLedger = '/driver/ledger';
-  static const driverPayouts = '/driver/payouts';
   static const driverStatements = '/driver/statements';
   static const driverGuardian = '/driver/guardian';
   static const driverPay = '/driver/pay';
@@ -56,12 +58,11 @@ abstract final class Routes {
   static const driverApplyPersonal = '/driver-apply/personal';
   static const driverApplyVehicle = '/driver-apply/vehicle';
   static const driverApplyDocuments = '/driver-apply/documents';
-  static const driverApplyPayout = '/driver-apply/payout';
   static const driverApplyReview = '/driver-apply/review';
   static const driverApplicationStatus = '/driver-apply/status';
 
   /// Reachable without signing in.
-  static const publicPaths = {splash, onboarding, login, otp};
+  static const publicPaths = {splash, onboarding, login, otp, emailOtp, register, forgotPassword};
 
   /// Reachable while signed in even before eligibility approval.
   static const preEligibilityPrefixes = [

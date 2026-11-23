@@ -8,7 +8,7 @@ import '../../../core/widgets/widgets.dart';
 import '../../driver/domain/driver_models.dart';
 import 'onboarding_providers.dart';
 
-/// Driver application hub: progress across the four steps, then review & submit.
+/// Driver application hub: progress across the three steps, then review & submit.
 class DriverApplyScreen extends ConsumerWidget {
   const DriverApplyScreen({super.key});
 
@@ -64,11 +64,11 @@ class _Hub extends StatelessWidget {
                 Expanded(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(value: prog.done / 4, minHeight: 8, backgroundColor: AppColors.nightLine, color: AppColors.crimson),
+                    child: LinearProgressIndicator(value: prog.done / 3, minHeight: 8, backgroundColor: AppColors.nightLine, color: AppColors.crimson),
                   ),
                 ),
                 const SizedBox(width: AppSpace.sm),
-                Text('${prog.done}/4 done', style: AppText.label.copyWith(color: Colors.white)),
+                Text('${prog.done}/3 done', style: AppText.label.copyWith(color: Colors.white)),
               ]),
             ]),
           ),
@@ -116,14 +116,6 @@ class _Hub extends StatelessWidget {
             done: prog.documents,
             enabled: true,
             onTap: () => context.push(Routes.driverApplyDocuments),
-          ),
-          _StepTile(
-            index: 4,
-            title: 'Payout account',
-            subtitle: prog.payout ? '${profile.payout.accountTitle ?? ''} · ${profile.payout.accountNumberMasked ?? ''}' : 'Required — where we send your earnings',
-            done: prog.payout,
-            enabled: true,
-            onTap: () => context.push(Routes.driverApplyPayout),
           ),
           const SizedBox(height: AppSpace.md),
           if (!locked)

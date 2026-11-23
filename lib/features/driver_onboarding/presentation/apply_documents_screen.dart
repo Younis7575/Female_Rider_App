@@ -23,7 +23,7 @@ class ApplyDocumentsScreen extends ConsumerWidget {
       bottom: profile.hasValue
           ? AppButton(
               label: ApplicationProgress(profile.requireValue).documents ? 'Continue' : 'Continue later',
-              onPressed: () => context.push(Routes.driverApplyPayout),
+              onPressed: () => context.push(Routes.driverApplyReview),
             )
           : null,
       child: RefreshIndicator(

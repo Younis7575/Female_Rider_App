@@ -10,3 +10,23 @@ class OtpArgs {
   final String phone;
   final OtpRequestResult request;
 }
+
+/// Result of a request that emailed a one-time code.
+class EmailOtpResult {
+  const EmailOtpResult({required this.email, required this.emailMasked, required this.purpose, required this.resendIn, this.debugCode});
+  final String email;
+  final String emailMasked;
+
+  /// "register" (verify email) or "login".
+  final String purpose;
+  final int resendIn;
+  final String? debugCode;
+
+  factory EmailOtpResult.fromJson(Map<String, dynamic> j, {required String fallbackPurpose}) => EmailOtpResult(
+        email: (j['email'] ?? '').toString(),
+        emailMasked: (j['email_masked'] ?? j['email'] ?? '').toString(),
+        purpose: (j['purpose'] ?? fallbackPurpose).toString(),
+        resendIn: int.tryParse('${j['resend_in'] ?? 60}') ?? 60,
+        debugCode: j['debug_code']?.toString(),
+      );
+}

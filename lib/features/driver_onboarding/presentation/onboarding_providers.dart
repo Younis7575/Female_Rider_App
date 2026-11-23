@@ -16,10 +16,8 @@ class ApplicationProgress {
   bool get personal => p.personalComplete && (p.address?.isNotEmpty ?? false) && p.hasEmergencyContactPhone;
   bool get vehicle => p.vehicleComplete;
   bool get documents => p.missingRequiredDocuments.isEmpty;
-  bool get payout => p.payout.isSet;
-  int get done => [personal, vehicle, documents, payout].where((e) => e).length;
-  // The backend requires a payout account before submission (missing: "payout account").
-  bool get readyToSubmit => personal && vehicle && documents && payout;
+  int get done => [personal, vehicle, documents].where((e) => e).length;
+  bool get readyToSubmit => personal && vehicle && documents;
 }
 
 /// Document types that carry an expiry date.

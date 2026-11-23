@@ -522,7 +522,7 @@ class _DashboardBody extends StatelessWidget {
         ),
         const SizedBox(height: AppSpace.sm),
         AppCard(
-          onTap: () => context.push(Routes.driverPayouts),
+          onTap: () => context.push(Routes.driverPay),
           child: Row(
             children: [
               Container(
@@ -542,14 +542,17 @@ class _DashboardBody extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Available for payout', style: AppText.bodySm),
-                    Text(money(d.availableForPayout), style: AppText.h3),
-                    Text('Balance ${money(d.balance)}', style: AppText.caption),
+                    Text('Balance', style: AppText.bodySm),
+                    Text(money(d.balance), style: AppText.h3.copyWith(color: d.balance < 0 ? AppColors.danger : null)),
+                    Text(
+                      d.amountDue > 0 ? 'Commission due ${money(d.amountDue)}' : 'Commission is deducted after each ride',
+                      style: AppText.caption,
+                    ),
                   ],
                 ),
               ),
               Text(
-                'Withdraw',
+                'Add balance',
                 style: AppText.label.copyWith(color: AppColors.crimson),
               ),
               const Icon(Icons.chevron_right_rounded, color: AppColors.crimson),

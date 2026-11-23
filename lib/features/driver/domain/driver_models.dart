@@ -355,7 +355,8 @@ class DriverDashboard {
     this.today = const PeriodStats(),
     this.week = const PeriodStats(),
     this.balance = 0,
-    this.availableForPayout = 0,
+    this.amountDue = 0,
+    this.minBalance = -500,
     this.currency = 'PKR',
     this.complianceIssues = const [],
     this.expiringDocuments = const [],
@@ -369,7 +370,11 @@ class DriverDashboard {
   final PeriodStats today;
   final PeriodStats week;
   final double balance;
-  final double availableForPayout;
+  /// Commission she owes (negative balance), paid via JazzCash top-up.
+  final double amountDue;
+
+  /// Below this balance she can't go online.
+  final double minBalance;
   final String currency;
   final List<String> complianceIssues;
   final List<ExpiringDocument> expiringDocuments;
@@ -383,7 +388,8 @@ class DriverDashboard {
     today: PeriodStats.fromJson(asMap(j['today'])),
     week: PeriodStats.fromJson(asMap(j['week'])),
     balance: asDouble(j['balance']),
-    availableForPayout: asDouble(j['available_for_payout']),
+    amountDue: asDouble(j['amount_due']),
+    minBalance: asDouble(j['min_balance'], -500),
     currency: asString(j['currency'], 'PKR'),
     complianceIssues: asStringList(j['compliance_issues']),
     expiringDocuments: asListOf(

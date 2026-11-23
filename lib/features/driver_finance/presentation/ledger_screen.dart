@@ -80,9 +80,9 @@ class _BalanceHeader extends StatelessWidget {
           ]),
         ),
         TextButton(
-          onPressed: () => context.push(Routes.driverPayouts),
+          onPressed: () => context.push(Routes.driverPay),
           style: TextButton.styleFrom(foregroundColor: AppColors.roseAccent),
-          child: const Text('Payouts'),
+          child: const Text('Add balance'),
         ),
       ]),
     );

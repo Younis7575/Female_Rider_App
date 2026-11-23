@@ -146,21 +146,6 @@ class DriverRepository {
     return DriverDocument.fromJson(env.dataMap);
   }
 
-  Future<DriverProfile> updatePayoutAccount({
-    required String method,
-    required String title,
-    required String number,
-  }) async {
-    final env = await _api.put(
-      '/driver/payout-account',
-      data: {
-        'payout_method': method,
-        'payout_account_title': title,
-        'payout_account_number': number,
-      },
-    );
-    return DriverProfile.fromJson(env.dataMap);
-  }
 
   Future<(DriverProfile, String?)> submit() async {
     final env = await _api.post(
@@ -279,28 +264,7 @@ class DriverRepository {
     );
   }
 
-  Future<(Paged<Payout>, double available, double minPayout)> payouts({
-    int page = 1,
-  }) async {
-    final env = await _api.get('/driver/payouts', query: {'page': page});
-    return (
-      Paged(
-        items: asListOf(env.data, Payout.fromJson),
-        pagination: env.pagination,
-      ),
-      asDouble(env.meta?['available_for_payout']),
-      asDouble(env.meta?['min_payout'], 500),
-    );
-  }
 
-  Future<(Payout, String?)> requestPayout(double amount) async {
-    final env = await _api.post(
-      '/driver/payouts',
-      data: {'amount': amount},
-      idempotent: true,
-    );
-    return (Payout.fromJson(env.dataMap), env.message);
-  }
 }
 
 final driverRepositoryProvider = Provider<DriverRepository>(

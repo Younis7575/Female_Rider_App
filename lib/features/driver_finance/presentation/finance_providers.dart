@@ -47,36 +47,3 @@ class LedgerController extends AsyncNotifier<LedgerPageState> {
 }
 
 final ledgerProvider = AsyncNotifierProvider.autoDispose<LedgerController, LedgerPageState>(LedgerController.new);
-
-class PayoutsState {
-  const PayoutsState({this.items = const [], this.available = 0, this.minPayout = 500, this.page = 1, this.hasMore = false, this.loadingMore = false});
-  final List<Payout> items;
-  final double available;
-  final double minPayout;
-  final int page;
-  final bool hasMore;
-  final bool loadingMore;
-}
-
-/// `GET /driver/payouts` (+ meta available_for_payout / min_payout).
-class PayoutsController extends AsyncNotifier<PayoutsState> {
-  @override
-  Future<PayoutsState> build() async {
-    final (page, available, min) = await ref.read(driverRepositoryProvider).payouts(page: 1);
-    return PayoutsState(items: page.items, available: available, minPayout: min, hasMore: page.hasMore);
-  }
-
-  Future<void> loadMore() async {
-    final s = state.value;
-    if (s == null || !s.hasMore || s.loadingMore) return;
-    state = AsyncData(PayoutsState(items: s.items, available: s.available, minPayout: s.minPayout, page: s.page, hasMore: s.hasMore, loadingMore: true));
-    try {
-      final (page, available, min) = await ref.read(driverRepositoryProvider).payouts(page: s.page + 1);
-      state = AsyncData(PayoutsState(items: [...s.items, ...page.items], available: available, minPayout: min, page: s.page + 1, hasMore: page.hasMore));
-    } catch (_) {
-      state = AsyncData(s);
-    }
-  }
-}
-
-final payoutsProvider = AsyncNotifierProvider.autoDispose<PayoutsController, PayoutsState>(PayoutsController.new);

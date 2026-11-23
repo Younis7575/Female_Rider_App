@@ -54,7 +54,7 @@ class _ApplyReviewScreenState extends ConsumerState<ApplyReviewScreen> {
   Widget build(BuildContext context) {
     final profile = ref.watch(driverProfileProvider);
     return ApplyScaffold(
-      step: 5,
+      step: 4,
       title: 'Review & submit',
       bottom: AppButton(
         label: 'Submit application',
@@ -77,7 +77,6 @@ class _ApplyReviewScreenState extends ConsumerState<ApplyReviewScreen> {
                   if (!prog.personal) 'Personal details',
                   if (!prog.vehicle) 'Vehicle',
                   if (!prog.documents) 'Required documents',
-                  if (!prog.payout) 'Payout account',
                 ].join('\n'),
               ),
               const SizedBox(height: AppSpace.sm),
@@ -118,15 +117,6 @@ class _ApplyReviewScreenState extends ConsumerState<ApplyReviewScreen> {
               rows: [
                 ('Uploaded', '${p.documents.length}'),
                 if (p.missingRequiredDocuments.isNotEmpty) ('Missing', p.missingRequiredDocuments.map(documentLabel).join(', ')),
-              ],
-            ),
-            _Section(
-              title: 'Payout account',
-              done: prog.payout,
-              onEdit: () => context.push(Routes.driverApplyPayout),
-              rows: [
-                ('Method', p.payout.method == null ? 'Required — not set' : humanize(p.payout.method)),
-                if (p.payout.isSet) ('Account', '${p.payout.accountTitle ?? ''} · ${p.payout.accountNumberMasked ?? ''}'),
               ],
             ),
             const SizedBox(height: AppSpace.sm),
