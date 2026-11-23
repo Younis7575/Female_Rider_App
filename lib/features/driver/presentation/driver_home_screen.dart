@@ -610,6 +610,11 @@ class _DashboardBody extends StatelessWidget {
               onTap: () => context.push(Routes.safetyReportBase),
             ),
             _Quick(
+              icon: Icons.account_balance_wallet_outlined,
+              label: 'Pay',
+              onTap: () => context.push(Routes.driverPay),
+            ),
+            _Quick(
               icon: Icons.family_restroom_rounded,
               label: 'Guardian',
               onTap: () => context.push(Routes.driverGuardian),

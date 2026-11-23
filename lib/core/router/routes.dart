@@ -48,6 +48,7 @@ abstract final class Routes {
   static const driverPayouts = '/driver/payouts';
   static const driverStatements = '/driver/statements';
   static const driverGuardian = '/driver/guardian';
+  static const driverPay = '/driver/pay';
 
   // Driver onboarding (any mode)
   static const driverDocuments = '/driver-documents';

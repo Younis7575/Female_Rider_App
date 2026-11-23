@@ -26,6 +26,7 @@ import '../../features/driver_finance/presentation/earnings_screen.dart';
 import '../../features/driver_finance/presentation/ledger_screen.dart';
 import '../../features/driver_finance/presentation/payouts_screen.dart';
 import '../../features/driver/presentation/guardian_screen.dart';
+import '../../features/driver_finance/presentation/pay_screen.dart';
 import '../../features/driver_finance/presentation/statements_screen.dart';
 import '../../features/driver_onboarding/presentation/application_status_screen.dart';
 import '../../features/driver_onboarding/presentation/apply_documents_screen.dart';
@@ -165,6 +166,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: 'payouts', builder: (_, _) => const PayoutsScreen()),
           GoRoute(path: 'statements', builder: (_, _) => const StatementsScreen()),
           GoRoute(path: 'guardian', builder: (_, _) => const GuardianScreen()),
+          GoRoute(path: 'pay', builder: (_, _) => const PayScreen()),
         ],
       ),
 
