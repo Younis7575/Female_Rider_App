@@ -38,6 +38,7 @@ abstract final class Routes {
   static const profile = '/profile';
   static const editProfile = '/profile/edit';
   static const settings = '/settings';
+  static const myRatings = '/ratings';
   static const sessions = '/sessions';
   static const deleteAccount = '/account/delete';
 

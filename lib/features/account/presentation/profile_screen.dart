@@ -39,10 +39,14 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: AppSpace.sm),
               Text(user.name ?? 'Your name', style: AppText.h2.copyWith(color: Colors.white)),
               const SizedBox(height: 4),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                RatingBadge(rating: user.rating, light: true),
-                Text('  ·  ${user.ratingCount} ratings', style: AppText.caption.copyWith(color: Colors.white70)),
-              ]),
+              InkWell(
+                onTap: () => context.push(Routes.myRatings),
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  RatingBadge(rating: user.rating, light: true),
+                  Text('  ·  ${user.ratingCount} ratings', style: AppText.caption.copyWith(color: Colors.white70)),
+                  const Icon(Icons.chevron_right_rounded, color: Colors.white70, size: 18),
+                ]),
+              ),
               const SizedBox(height: AppSpace.md),
               const ModeBadge(onDark: true),
             ]),

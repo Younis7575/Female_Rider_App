@@ -179,6 +179,7 @@ class Trip {
     this.vehicle,
     this.driverLocation,
     this.myRating,
+    this.theirRating,
     this.timeline = const TripTimeline(),
     this.cancelledBy,
     this.cancelReason,
@@ -220,6 +221,9 @@ class Trip {
   final Vehicle? vehicle;
   final DriverLocation? driverLocation;
   final int? myRating;
+
+  /// Rating the other person gave me on this trip.
+  final int? theirRating;
   final TripTimeline timeline;
   final String? cancelledBy;
   final String? cancelReason;
@@ -270,6 +274,7 @@ class Trip {
         vehicle: vehicle,
         driverLocation: driverLocation ?? this.driverLocation,
         myRating: myRating,
+        theirRating: theirRating,
         timeline: timeline,
         cancelledBy: cancelledBy,
         cancelReason: cancelReason,
@@ -315,6 +320,7 @@ class Trip {
       vehicle: j['vehicle'] is Map ? Vehicle.fromJson(asMap(j['vehicle'])) : null,
       driverLocation: j['driver_location'] is Map ? DriverLocation.fromJson(asMap(j['driver_location'])) : null,
       myRating: asIntOrNull(j['my_rating']),
+      theirRating: asIntOrNull(j['their_rating']),
       timeline: TripTimeline.fromJson(asMap(j['timeline'])),
       cancelledBy: asStringOrNull(j['cancelled_by']),
       cancelReason: asStringOrNull(j['cancel_reason']),

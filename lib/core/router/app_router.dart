@@ -54,6 +54,7 @@ import '../../features/auth/presentation/email_otp_screen.dart';
 import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
+import '../../features/account/presentation/my_ratings_screen.dart';
 import 'redirect.dart';
 import 'routes.dart';
 
@@ -155,6 +156,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [GoRoute(path: 'edit', builder: (_, _) => const EditProfileScreen())],
       ),
       GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),
+      GoRoute(path: Routes.myRatings, builder: (_, _) => const MyRatingsScreen()),
       GoRoute(path: Routes.sessions, builder: (_, _) => const SessionsScreen()),
       GoRoute(path: Routes.deleteAccount, builder: (_, _) => const DeleteAccountScreen()),
 

@@ -108,6 +108,7 @@ class TripDetailScreen extends ConsumerWidget {
           const Divider(height: 20),
           KeyValueRow('Payment', '${humanize(t.paymentMethod)} · ${humanize(t.paymentStatus ?? 'pending')}'),
           if (t.myRating != null) KeyValueRow('Your rating', '${t.myRating} ★'),
+          if (t.theirRating != null) KeyValueRow('Rating received', '${t.theirRating} ★'),
         ]),
       ),
       if (t.timeline.assignedAt != null) ...[

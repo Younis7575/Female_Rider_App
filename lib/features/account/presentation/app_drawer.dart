@@ -49,6 +49,7 @@ class AppDrawer extends ConsumerWidget {
         _Item(icon: Icons.local_offer_outlined, label: 'Coupons', onTap: () => go(Routes.coupons)),
         _Item(icon: Icons.bookmark_border_rounded, label: 'Saved places', onTap: () => go(Routes.savedPlaces)),
       ],
+      _Item(icon: Icons.star_outline_rounded, label: 'My ratings', onTap: () => go(Routes.myRatings)),
       _Item(icon: Icons.notifications_none_rounded, label: 'Notifications', badge: unread, onTap: () => go(Routes.notifications)),
       const Divider(height: 24),
       _Item(icon: Icons.support_agent_rounded, label: 'Support & help', onTap: () => go(Routes.support)),
