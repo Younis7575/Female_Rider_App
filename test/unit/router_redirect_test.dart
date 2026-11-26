@@ -32,6 +32,9 @@ void main() {
       expect(computeRedirect(const SessionSignedOut(), Routes.splash), Routes.onboarding);
       expect(computeRedirect(const SessionSignedOut(onboardingSeen: true), Routes.home), Routes.login);
       expect(computeRedirect(const SessionSignedOut(onboardingSeen: true), Routes.otp), isNull);
+      for (final p in [Routes.register, Routes.emailOtp, Routes.forgotPassword, Routes.login]) {
+        expect(computeRedirect(const SessionSignedOut(onboardingSeen: true), p), isNull, reason: p);
+      }
       expect(computeRedirect(const SessionSignedOut(), Routes.legal('terms')), isNull);
       expect(computeRedirect(const SessionSignedOut(onboardingSeen: true), Routes.driverHome), Routes.login);
     });

@@ -22,7 +22,7 @@ String? computeRedirect(SessionState session, String path) {
       return path == Routes.splash ? null : Routes.splash;
 
     case SessionSignedOut(:final onboardingSeen):
-      if (path == Routes.login || path == Routes.otp || path == Routes.onboarding || path.startsWith('/legal/')) return null;
+      if ((Routes.publicPaths.contains(path) && path != Routes.splash) || path.startsWith('/legal/')) return null;
       return onboardingSeen ? Routes.login : Routes.onboarding;
 
     case SessionSignedIn(:final me):
