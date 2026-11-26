@@ -13,13 +13,27 @@ import '../data/manual_payment_repository.dart';
 /// Manual JazzCash payment: send money to FemaleRider's account from your phone, then
 /// submit the TID and a screenshot. An admin verifies it and credits your balance.
 class PayScreen extends ConsumerWidget {
-  const PayScreen({super.key});
+  const PayScreen({super.key, this.embedded = false});
+
+  /// Shown as the Wallet tab of the driver bottom bar (no back button).
+  final bool embedded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final info = ref.watch(paymentInfoProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Pay FemaleRider')),
+      appBar: AppBar(
+        title: Text(embedded ? 'Wallet' : 'Pay FemaleRider'),
+        automaticallyImplyLeading: !embedded,
+        actions: [
+          if (embedded)
+            IconButton(
+              tooltip: 'Refresh',
+              onPressed: () => ref.invalidate(paymentInfoProvider),
+              icon: const Icon(Icons.refresh_rounded),
+            ),
+        ],
+      ),
       body: AsyncView<PaymentInfo>(
         value: info,
         onRetry: () => ref.invalidate(paymentInfoProvider),

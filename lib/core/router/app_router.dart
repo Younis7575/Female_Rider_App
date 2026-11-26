@@ -18,7 +18,7 @@ import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/customer/presentation/coupons_screen.dart';
 import '../../features/customer/presentation/customer_home_screen.dart';
 import '../../features/customer/presentation/saved_places_screen.dart';
-import '../../features/driver/presentation/driver_home_screen.dart';
+import '../../features/driver/presentation/driver_shell.dart';
 import '../../features/driver/presentation/driver_requests_screen.dart';
 import '../../features/driver/presentation/driver_trip_screen.dart';
 import '../../features/driver_finance/presentation/earnings_screen.dart';
@@ -163,7 +163,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Driver mode
       GoRoute(
         path: Routes.driverHome,
-        builder: (_, _) => const DriverHomeScreen(),
+        builder: (_, _) => const DriverShell(),
         routes: [
           GoRoute(path: 'requests', builder: (_, _) => const DriverRequestsScreen()),
           GoRoute(

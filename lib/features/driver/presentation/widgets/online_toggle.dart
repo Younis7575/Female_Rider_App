@@ -14,7 +14,15 @@ class DriverOnlineToggle extends ConsumerWidget {
   /// Called after a successful toggle with the new online state.
   final ValueChanged<bool>? onChanged;
 
-  Future<void> _toggle(BuildContext context, WidgetRef ref, bool online) async {
+  Future<void> _toggle(BuildContext context, WidgetRef ref, bool online) =>
+      toggleDriverOnline(context, ref, online, onChanged: onChanged);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => _build(context, ref);
+}
+
+/// Shared go-online / go-offline action with compliance dialog.
+Future<void> toggleDriverOnline(BuildContext context, WidgetRef ref, bool online, {ValueChanged<bool>? onChanged}) async {
     final tracker = ref.read(driverTrackerProvider.notifier);
     try {
       if (online) {
@@ -53,10 +61,10 @@ class DriverOnlineToggle extends ConsumerWidget {
         showErrorSnack(context, e);
       }
     }
-  }
+}
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
+extension on DriverOnlineToggle {
+  Widget _build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(driverTrackerProvider);
     final online = state.online;
     return Semantics(
@@ -139,4 +147,56 @@ class _Knob extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Compact inDrive-style "Offline / Online" switch for app bars.
+class DriverOnlineSwitch extends ConsumerWidget {
+  const DriverOnlineSwitch({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(driverTrackerProvider);
+    final online = state.online;
+    return Semantics(
+      button: true,
+      toggled: online,
+      label: online ? 'You are online. Tap to go offline' : 'You are offline. Tap to go online',
+      child: GestureDetector(
+        key: const ValueKey('online-switch'),
+        onTap: state.busy ? null : () => toggleDriverOnline(context, ref, online),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: BoxDecoration(
+            color: online ? AppColors.success : AppColors.nightSoft,
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+            border: Border.all(color: online ? Colors.transparent : AppColors.nightLine),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            if (online) const SizedBox(width: 12),
+            if (!online) _dot(online, state.busy),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(online ? 'Online' : 'Offline', style: AppText.title.copyWith(color: Colors.white)),
+            ),
+            if (online) _dot(online, state.busy),
+            if (!online) const SizedBox(width: 12),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _dot(bool online, bool busy) => Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: online ? Colors.white : AppColors.crimson),
+        child: busy
+            ? Padding(
+                padding: const EdgeInsets.all(8),
+                child: CircularProgressIndicator(strokeWidth: 2, color: online ? AppColors.success : Colors.white),
+              )
+            : Icon(Icons.power_settings_new_rounded, size: 18, color: online ? AppColors.success : Colors.white),
+      );
 }

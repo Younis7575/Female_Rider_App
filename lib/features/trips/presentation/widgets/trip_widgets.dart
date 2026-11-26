@@ -182,8 +182,8 @@ IconData vehicleIcon(String? iconOrSlug) {
   switch (iconOrSlug) {
     case 'bike':
       return Icons.two_wheeler_rounded;
-    case 'rickshaw':
-      return Icons.electric_rickshaw_rounded;
+    case 'scooty':
+      return Icons.moped_rounded;
     case 'car_premium':
     case 'comfort':
       return Icons.local_taxi_rounded;
@@ -206,7 +206,7 @@ class TripListCard extends StatelessWidget {
       onTap: onTap,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(vehicleIcon(trip.vehicleCategorySlug ?? (trip.vehicleCategory?.toLowerCase().contains('bike') == true ? 'bike' : (trip.vehicleCategory?.toLowerCase().contains('rickshaw') == true ? 'rickshaw' : 'car'))),
+          Icon(vehicleIcon(trip.vehicleCategorySlug ?? (trip.vehicleCategory?.toLowerCase().contains('bike') == true ? 'bike' : (trip.vehicleCategory?.toLowerCase().contains('scooty') == true ? 'scooty' : 'car'))),
               size: 18, color: AppColors.muted),
           const SizedBox(width: 6),
           Expanded(child: Text(formatDateTime(trip.createdAt), style: AppText.caption)),

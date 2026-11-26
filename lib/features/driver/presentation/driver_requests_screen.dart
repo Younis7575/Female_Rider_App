@@ -16,13 +16,18 @@ import '../../auth/presentation/session_controller.dart';
 import '../../trips/domain/trip_models.dart';
 import '../data/driver_repository.dart';
 import '../domain/driver_models.dart';
+import '../../account/presentation/app_drawer.dart';
+import 'driver_shell.dart';
 import 'requests_controller.dart';
 import 'widgets/online_toggle.dart';
 import 'widgets/request_card.dart';
 
 /// Incoming ride requests and inDrive-style negotiation for drivers.
 class DriverRequestsScreen extends ConsumerStatefulWidget {
-  const DriverRequestsScreen({super.key});
+  const DriverRequestsScreen({super.key, this.embedded = false});
+
+  /// First tab of the driver bottom bar: menu + Online/Offline switch in the app bar.
+  final bool embedded;
 
   @override
   ConsumerState<DriverRequestsScreen> createState() => _DriverRequestsScreenState();
@@ -172,27 +177,42 @@ class _DriverRequestsScreenState extends ConsumerState<DriverRequestsScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.night,
-        foregroundColor: Colors.white,
-        title: Text('Ride requests', style: AppText.h3.copyWith(color: Colors.white)),
-        actions: [
-          IconButton(tooltip: 'Refresh', onPressed: () => _ctrl.refresh(), icon: const Icon(Icons.refresh_rounded)),
-        ],
-      ),
+      appBar: widget.embedded
+          ? AppBar(
+              backgroundColor: AppColors.night,
+              foregroundColor: Colors.white,
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                tooltip: 'Menu',
+                onPressed: () => DriverShell.scaffoldKey.currentState?.openDrawer(),
+                icon: const Icon(Icons.menu_rounded),
+              ),
+              centerTitle: true,
+              title: const DriverOnlineSwitch(),
+              actions: const [NotificationBell(onDark: true), SizedBox(width: 4)],
+            )
+          : AppBar(
+              backgroundColor: AppColors.night,
+              foregroundColor: Colors.white,
+              title: Text('Ride requests', style: AppText.h3.copyWith(color: Colors.white)),
+              actions: [
+                IconButton(tooltip: 'Refresh', onPressed: () => _ctrl.refresh(), icon: const Icon(Icons.refresh_rounded)),
+              ],
+            ),
       body: Column(children: [
-        Container(
-          color: AppColors.night,
-          padding: const EdgeInsets.fromLTRB(AppSpace.md, 0, AppSpace.md, AppSpace.md),
-          child: const DriverOnlineToggle(),
-        ),
+        if (!widget.embedded)
+          Container(
+            color: AppColors.night,
+            padding: const EdgeInsets.fromLTRB(AppSpace.md, 0, AppSpace.md, AppSpace.md),
+            child: const DriverOnlineToggle(),
+          ),
         if (rt != null && rt != RealtimeStatus.connected && tracker.online) const OfflineBanner(),
         Expanded(
           child: !tracker.online
               ? const EmptyState(
                   icon: Icons.power_settings_new_rounded,
                   title: 'You\'re offline',
-                  message: 'Go online using the switch above to start receiving ride requests from nearby passengers.',
+                  message: 'Tap “Offline” at the top to go online and start receiving ride requests from nearby passengers.',
                 )
               : RefreshIndicator(
                   color: AppColors.crimson,

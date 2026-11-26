@@ -218,7 +218,7 @@ class _VehicleFormState extends ConsumerState<_VehicleForm> {
 
   IconData _iconFor(String slug) => switch (slug) {
         'bike' => Icons.two_wheeler_rounded,
-        'rickshaw' => Icons.electric_rickshaw_rounded,
+        'scooty' => Icons.moped_rounded,
         _ => Icons.directions_car_rounded,
       };
 }

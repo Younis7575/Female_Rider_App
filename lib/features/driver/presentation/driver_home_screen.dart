@@ -13,11 +13,12 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/widgets.dart';
-import '../../account/presentation/app_drawer.dart';
 import '../../account/presentation/mode_switcher.dart';
 import '../../auth/presentation/session_controller.dart';
 import '../domain/driver_models.dart';
+import '../../account/presentation/app_drawer.dart';
 import 'driver_providers.dart';
+import 'driver_shell.dart';
 import 'requests_controller.dart';
 import 'widgets/online_toggle.dart';
 
@@ -30,7 +31,6 @@ class DriverHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _map = AppMapController();
   StreamSubscription<RealtimeEvent>? _rtSub;
   bool _synced = false;
@@ -116,9 +116,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
     dash.whenData(_sync);
 
     return Scaffold(
-      key: _scaffoldKey,
       backgroundColor: AppColors.background,
-      drawer: const AppDrawer(),
       body: RefreshIndicator(
         color: AppColors.crimson,
         onRefresh: _refresh,
@@ -136,14 +134,14 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                         IconButton(
                           tooltip: 'Menu',
                           onPressed: () =>
-                              _scaffoldKey.currentState?.openDrawer(),
+                              DriverShell.scaffoldKey.currentState?.openDrawer(),
                           icon: const Icon(
                             Icons.menu_rounded,
                             color: Colors.white,
                           ),
                         ),
                         const Spacer(),
-                        const ModeBadge(onDark: true),
+                        const DriverOnlineSwitch(),
                         const Spacer(),
                         const NotificationBell(onDark: true),
                       ],
@@ -170,8 +168,8 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppSpace.md),
-                    const DriverOnlineToggle(),
+                    const SizedBox(height: AppSpace.sm),
+                    const ModeBadge(onDark: true),
                   ],
                 ),
               ),
@@ -230,7 +228,7 @@ class _BalanceBar extends StatelessWidget {
     final low = d.balance < d.minBalance;
     final negative = d.balance < 0;
     return AppCard(
-      onTap: () => context.push(Routes.driverPay),
+      onTap: () => ProviderScope.containerOf(context).read(driverTabProvider.notifier).select(2),
       color: low ? AppColors.dangerSoft : null,
       child: Row(
         children: [
@@ -398,7 +396,7 @@ class _RequestsPreview extends ConsumerWidget {
     final count = reqs.value?.length ?? 0;
     final counters = reqs.value?.where((r) => r.hasCustomerCounter).length ?? 0;
     return AppCard(
-      onTap: () => context.push(Routes.driverRequests),
+      onTap: () => ref.read(driverTabProvider.notifier).select(0),
       child: Row(
         children: [
           Container(
