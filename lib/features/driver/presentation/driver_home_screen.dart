@@ -194,6 +194,10 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                     const SizedBox(height: AppSpace.sm),
                   ],
                   const _GuardianPrompt(),
+                  if (dash.value != null) ...[
+                    _BalanceBar(d: dash.value!),
+                    const SizedBox(height: AppSpace.sm),
+                  ],
                   _MapCard(controller: _map, tracker: tracker),
                   const SizedBox(height: AppSpace.sm),
                   if (tracker.online) ...[
@@ -211,6 +215,47 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Always-visible prepaid balance (commission is deducted from it after each ride).
+class _BalanceBar extends StatelessWidget {
+  const _BalanceBar({required this.d});
+  final DriverDashboard d;
+
+  @override
+  Widget build(BuildContext context) {
+    final low = d.balance < d.minBalance;
+    final negative = d.balance < 0;
+    return AppCard(
+      onTap: () => context.push(Routes.driverPay),
+      color: low ? AppColors.dangerSoft : null,
+      child: Row(
+        children: [
+          Icon(Icons.account_balance_wallet_rounded, color: negative ? AppColors.danger : AppColors.success),
+          const SizedBox(width: AppSpace.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Your balance', style: AppText.bodySm),
+                Text(
+                  formatMoney(d.balance),
+                  key: const ValueKey('driver-balance'),
+                  style: AppText.h3.copyWith(color: negative ? AppColors.danger : AppColors.success),
+                ),
+                if (low)
+                  Text('Too low to go online – add balance', style: AppText.caption.copyWith(color: AppColors.danger))
+                else if (negative)
+                  Text('Commission due ${formatMoney(d.amountDue)}', style: AppText.caption),
+              ],
+            ),
+          ),
+          Text('Add balance', style: AppText.label.copyWith(color: AppColors.crimson)),
+          const Icon(Icons.chevron_right_rounded, color: AppColors.crimson),
+        ],
       ),
     );
   }

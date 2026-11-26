@@ -113,10 +113,23 @@ class _PayFormState extends ConsumerState<_PayForm> {
               padding: const EdgeInsets.all(AppSpace.md),
               children: [
                 AppCard(
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: _stat('Amount due', formatMoney(p.amountDue))),
-                      Expanded(child: _stat('Awaiting verification', formatMoney(p.pendingAmount))),
+                      Text('Your balance', style: AppText.caption),
+                      Text(
+                        formatMoney(p.balance),
+                        style: AppText.money.copyWith(color: p.balance < 0 ? AppColors.danger : AppColors.success),
+                      ),
+                      const SizedBox(height: 4),
+                      Text('5% commission is deducted from this balance after every ride.', style: AppText.caption),
+                      const Divider(height: AppSpace.lg),
+                      Row(
+                        children: [
+                          Expanded(child: _stat('Amount due', formatMoney(p.amountDue))),
+                          Expanded(child: _stat('Awaiting verification', formatMoney(p.pendingAmount))),
+                        ],
+                      ),
                     ],
                   ),
                 ),
